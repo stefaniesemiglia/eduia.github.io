@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EduIA-Bot | Prototipo de Chatbot Educativo</title>
+  <meta name="description" content="Prototipo de chatbot educativo sobre Inteligencia Artificial en educación, creado con Dialogflow Messenger." />
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#121a2b;
+      --muted:#97a3b6;
+      --text:#e9eef7;
+      --accent:#4f8cff;
+      --accent2:#22c55e;
+      --border:rgba(255,255,255,.10);
+      --shadow: 0 18px 45px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(79,140,255,.25), transparent 60%),
+                  radial-gradient(1000px 500px at 90% 10%, rgba(34,197,94,.18), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1100px; margin:0 auto; padding:28px 18px 80px}
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+      padding:18px 18px;
+      border:1px solid var(--border);
+      background: rgba(18,26,43,.65);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .brand{display:flex; align-items:center; gap:12px}
+    .logo{
+      width:44px; height:44px; border-radius:14px;
+      background: linear-gradient(135deg, rgba(79,140,255,.95), rgba(34,197,94,.75));
+      display:grid; place-items:center;
+      box-shadow: 0 12px 30px rgba(79,140,255,.18);
+      font-weight:700;
+    }
+    .brand h1{margin:0; font-size:18px}
+    .brand p{margin:2px 0 0; color:var(--muted); font-size:12.5px}
+
+    .hero{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:18px;
+      align-items:stretch;
+    }
+    @media (max-width: 900px){
+      .hero{grid-template-columns:1fr}
+    }
+    .card{
+      border:1px solid var(--border);
+      background: rgba(18,26,43,.65);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:18px;
+    }
+    .title{
+      font-size:26px;
+      margin:0 0 10px;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:0 0 14px;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .badges{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0 8px}
+    .badge{
+      font-size:12px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      color:var(--text);
+      background: rgba(255,255,255,.04);
+    }
+    .badge strong{color:#fff}
+    .ctaRow{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:8px; padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      font-weight:700;
+      font-size:13px;
+    }
+    .btn:hover{background: rgba(255,255,255,.10)}
+    .btn.primary{
+      border-color: rgba(79,140,255,.35);
+      background: rgba(79,140,255,.18);
+    }
+    .btn.primary:hover{background: rgba(79,140,255,.24)}
+    .btn.good{
+      border-color: rgba(34,197,94,.35);
+      background: rgba(34,197,94,.14);
+    }
+    .grid{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:18px;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns:1fr}
+    }
+    h2{margin:0 0 10px; font-size:16px}
+    ul{margin:10px 0 0; padding-left:18px; color:var(--muted)}
+    li{margin:6px 0}
+    .kpi{
+      display:flex; gap:12px; align-items:flex-start;
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius:16px;
+      padding:12px;
+      background: rgba(255,255,255,.03);
+      margin-top:12px;
+    }
+    .kpi .dot{
+      width:10px; height:10px; border-radius:50%;
+      background: var(--accent2);
+      margin-top:6px;
+      box-shadow: 0 0 0 6px rgba(34,197,94,.12);
+    }
+    .muted{color:var(--muted)}
+    footer{
+      margin-top:18px;
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      padding:14px 0 0;
+    }
+
+    /* Ajuste de tamaño/posición del widget (opcional) */
+    df-messenger {
+      --df-messenger-titlebar-background: #1f4fbf;
+      --df-messenger-titlebar-font-color: #ffffff;
+      --df-messenger-chat-background-color: #ffffff;
+      --df-messenger-font-color: #111827;
+      --df-messenger-send-icon: #1f4fbf;
+      --df-messenger-user-message: #e8f0ff;
+      --df-messenger-bot-message: #f4f6f8;
+    }
+  </style>
+
+  <!-- Dialogflow Messenger -->
+  <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">IA</div>
+        <div>
+          <h1>EduIA-Bot</h1>
+          <p>Prototipo de chatbot educativo (Dialogflow Messenger) – Tema: IA en educación y uso ético</p>
+        </div>
+      </div>
+      <a class="btn primary" href="#como-usar">Cómo usar</a>
+    </header>
+
+    <section class="hero">
+      <div class="card">
+        <h1 class="title">Tutor virtual de Inteligencia Artificial</h1>
+        <p class="subtitle">
+          Este prototipo apoya el aprendizaje de conceptos básicos de IA, ejemplos de uso en educación y prácticas rápidas
+          con retroalimentación. Para iniciar, abre el chat (esquina inferior derecha) y escribe <b>Hola</b>.
+        </p>
+
+        <div class="badges">
+          <span class="badge"><strong>Asignatura:</strong> TIC</span>
+          <span class="badge"><strong>Tema:</strong> IA en educación</span>
+          <span class="badge"><strong>Enfoque:</strong> Tutoría + Práctica</span>
+          <span class="badge"><strong>Idioma:</strong> Español</span>
+        </div>
+
+        <div class="kpi">
+          <div class="dot"></div>
+          <div>
+            <div><b>Uso ético:</b> EduIA-Bot orienta y guía, pero no reemplaza el trabajo del estudiante.</div>
+            <div class="muted">Evita compartir datos personales; utiliza la IA como apoyo para comprender y practicar.</div>
+          </div>
+        </div>
+
+        <div class="ctaRow">
+          <span class="btn good">Sugerencia: escribe “Menú”</span>
+          <span class="btn">Prueba: “Opción 4”</span>
+          <span class="btn">Responde: A / B / C</span>
+        </div>
+      </div>
+
+      <div class="card" id="como-usar">
+        <h2>Cómo usar el prototipo</h2>
+        <ul>
+          <li>1) Abre el chat (abajo a la derecha).</li>
+          <li>2) Escribe <b>Hola</b> para iniciar.</li>
+          <li>3) Elige una opción: <b>1, 2, 3 o 4</b>.</li>
+          <li>4) En práctica (Opción 4), responde con <b>A/B/C</b> para ver retroalimentación.</li>
+        </ul>
+        <p class="muted" style="margin-top:12px;">
+          Si el bot no entiende, escribe <b>Menú</b> para volver a las opciones.
+        </p>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Qué puede hacer</h2>
+        <ul>
+          <li>Explicar conceptos básicos de Inteligencia Artificial.</li>
+          <li>Mostrar ejemplos reales de IA aplicada a educación.</li>
+          <li>Orientar sobre el uso ético y responsable de IA.</li>
+          <li>Realizar mini evaluaciones con retroalimentación.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Menú rápido (para probar)</h2>
+        <ul>
+          <li><b>Opción 1:</b> Conceptos básicos de IA</li>
+          <li><b>Opción 2:</b> Ejemplos de IA en educación</li>
+          <li><b>Opción 3:</b> Uso ético de la IA</li>
+          <li><b>Opción 4:</b> Práctica / Mini quiz</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Buenas prácticas</h2>
+        <ul>
+          <li>No compartas información personal (teléfono, cédula, correos, notas con nombres).</li>
+          <li>Usa el bot para comprender, resumir ideas y practicar.</li>
+          <li>Si es una tarea, solicita estructura y ejemplos; redacta tu versión final.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>
+      EduIA-Bot – Prototipo académico. Si necesitas volver al inicio, escribe “Menú”.
+    </footer>
+  </div>
+
+  <!-- Widget del chatbot -->
+  <df-messenger
+    intent="WELCOME"
+    chat-title="EduIA-Bot"
+    agent-id="0ad64419-e7d1-48b8-8e62-24a3aaaf9dbb"
+    language-code="es"
+  ></df-messenger>
+</body>
+</html>
